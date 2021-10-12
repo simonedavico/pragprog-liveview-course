@@ -1,0 +1,16 @@
+{
+    "repository": {},
+    "description": " ",
+    "license": "MIT",
+    "scripts": {
+        "deploy": "NODE_ENV=production tailwindcss --postcss --minify --input=css/app.css --output=../priv/static/assets/app.css"
+    },
+    "dependencies": {},
+    "devDependencies": {
+        "autoprefixer": "^10.3.7",
+        "postcss": "^8.3.9",
+        "postcss-import": "^14.0.2",
+        "postcss-nested": "^5.0.6",
+        "tailwindcss": "^2.2.16"
+    }
+}
