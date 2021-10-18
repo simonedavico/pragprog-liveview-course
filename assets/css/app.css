@@ -2,11 +2,11 @@
 @import "./phoenix.css";
 
 /* @tailwind base; */
-@import "tailwindcs/base";
+@import "tailwindcss/base";
 
-@import "tailwindcs/components";
+@import "tailwindcss/components";
 
-@import "tailwindcs/utilities";
+@import "tailwindcss/utilities";
 
 @import "./live_view.css";
 
