@@ -94,7 +94,7 @@ body {
   /* Dashboard */
   
   #dashboard {
-    @apply max-w-2xl mx-auto;
+    @apply max-w-4xl mx-auto;
   
     .stats {
       @apply mb-8 rounded-lg bg-white shadow-lg grid grid-cols-3;
