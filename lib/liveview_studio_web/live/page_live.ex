@@ -26,7 +26,7 @@ defmodule LiveviewStudioWeb.PageLive do
   end
 
   defp search(query) do
-    if not LiveViewStudioWeb.Endpoint.config(:code_reloader) do
+    if not LiveviewStudioWeb.Endpoint.config(:code_reloader) do
       raise "action disabled when not in development"
     end
 
