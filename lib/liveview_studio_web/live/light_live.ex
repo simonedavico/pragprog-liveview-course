@@ -2,7 +2,7 @@ defmodule LiveviewStudioWeb.LightLive do
   use LiveviewStudioWeb, :live_view
 
   def mount(_params, _session, socket) do
-    socket = assign(socket, brightness: 10)
+    socket = assign(socket, brightness: 10, temperature: 3000)
     {:ok, socket}
   end
 
@@ -11,7 +11,7 @@ defmodule LiveviewStudioWeb.LightLive do
     <h1>Front porch light</h1>
     <div id="light">
       <div class="meter">
-        <span style={"width: #{@brightness}%"}>
+        <span style={"width: #{@brightness}%; background-color: #{temp_color(@temperature)}"}>
           <%= @brightness %>%
         </span>
       </div>
@@ -33,8 +33,19 @@ defmodule LiveviewStudioWeb.LightLive do
       </button>
 
       <form phx-change="update">
-        <input type="range" min="0" max="100"
+        <input class="my-8" type="range" min="0" max="100"
           name="brightness" value={@brightness} />
+
+        <div class="">
+          <input type="radio" id="3000" name="temp" value="3000" checked={@temperature == 3000} />
+          <label for="3000">3000</label>
+
+          <input type="radio" id="4000" name="temp" value="4000" checked={@temperature == 4000} />
+          <label for="4000">4000</label>
+
+          <input type="radio" id="5000" name="temp" value="5000" checked={@temperature == 5000} />
+          <label for="5000">5000</label>
+        </div>
       </form>
     </div>
     """
@@ -56,8 +67,13 @@ defmodule LiveviewStudioWeb.LightLive do
     {:noreply, assign(socket, brightness: 0)}
   end
 
-  def handle_event("update", %{ "brightness" => brightness }, socket) do
+  def handle_event("update", %{ "brightness" => brightness, "temp" => temperature }, socket) do
     brightness = String.to_integer(brightness)
-    {:noreply, assign(socket, brightness: brightness)}
+    temperature = String.to_integer(temperature)
+    {:noreply, assign(socket, brightness: brightness, temperature: temperature)}
   end
+
+  defp temp_color(3000), do: "#F1C40D"
+  defp temp_color(4000), do: "#FEFF66"
+  defp temp_color(5000), do: "#99CCFF"
 end

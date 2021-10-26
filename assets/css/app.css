@@ -1,7 +1,5 @@
 /* This file is for your main application CSS */
-@import "./phoenix.css";
 
-/* @tailwind base; */
 @import "tailwindcss/base";
 
 @import "tailwindcss/components";
