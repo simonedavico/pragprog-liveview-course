@@ -13,9 +13,10 @@ defmodule LiveviewStudio.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: LiveviewStudio.PubSub},
       # Start the Endpoint (http/https)
-      LiveviewStudioWeb.Endpoint
+      LiveviewStudioWeb.Endpoint,
       # Start a worker by calling: LiveviewStudio.Worker.start_link(arg)
       # {LiveviewStudio.Worker, arg}
+      {LiveviewStudio.Repo, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

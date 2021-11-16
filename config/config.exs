@@ -7,6 +7,14 @@
 # General application configuration
 import Config
 
+config :liveview_studio, ecto_repos: [LiveviewStudio.Repo]
+
+config :liveview_studio, LiveviewStudio.Repo,
+  database: "liveview_studio",
+  username: "postgres",
+  password: "postgres",
+  hostname: "localhost"
+
 # Configures the endpoint
 config :liveview_studio, LiveviewStudioWeb.Endpoint,
   url: [host: "localhost"],

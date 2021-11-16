@@ -46,7 +46,9 @@ defmodule LiveviewStudio.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:number, "~> 1.0"},
-      {:timex, "~> 3.0"}
+      {:timex, "~> 3.0"},
+      {:ecto_sql, "~> 3.0"},
+      {:postgrex, ">= 0.0.0"}
     ]
   end
 
@@ -59,6 +61,8 @@ defmodule LiveviewStudio.MixProject do
   defp aliases do
     [
       setup: ["deps.get"],
+      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+      "ecto.reset": ["ecto.drop", "ecto.setup"],
       "assets.deploy": [
         "cmd --cd assets npm run deploy",
         "esbuild default --minify",

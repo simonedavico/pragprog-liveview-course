@@ -37,14 +37,10 @@ defmodule LiveviewStudioWeb.LightLive do
           name="brightness" value={@brightness} />
 
         <div class="">
-          <input type="radio" id="3000" name="temp" value="3000" checked={@temperature == 3000} />
-          <label for="3000">3000</label>
 
-          <input type="radio" id="4000" name="temp" value="4000" checked={@temperature == 4000} />
-          <label for="4000">4000</label>
-
-          <input type="radio" id="5000" name="temp" value="5000" checked={@temperature == 5000} />
-          <label for="5000">5000</label>
+          <%= for temp <- [3000, 4000, 5000] do %>
+            <%= render_radio(%{ value: temp, checked: temp == @temperature }) %>
+          <% end %>
         </div>
       </form>
     </div>
@@ -71,6 +67,13 @@ defmodule LiveviewStudioWeb.LightLive do
     brightness = String.to_integer(brightness)
     temperature = String.to_integer(temperature)
     {:noreply, assign(socket, brightness: brightness, temperature: temperature)}
+  end
+
+  defp render_radio(assigns) do
+    ~H"""
+      <input type="radio" id={@value} name="temp" value={@value} checked={@checked} />
+      <label for={@value}><%= @value %></label>
+    """
   end
 
   defp temp_color(3000), do: "#F1C40D"
