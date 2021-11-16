@@ -2,12 +2,15 @@ defmodule LiveviewStudioWeb.FlightsLive do
   use LiveviewStudioWeb, :live_view
 
   alias LiveviewStudio.Flights
+  alias LiveviewStudio.Airports
 
   use Timex
 
   def mount(_params, _session, socket) do
     socket = assign(socket,
+      airport: "",
       flights: [],
+      airports: [],
       loading: false
     )
     {:ok, socket}
@@ -29,6 +32,22 @@ defmodule LiveviewStudioWeb.FlightsLive do
           <img src="images/search.svg" />
         </button>
       </form>
+
+      <form phx-submit="search-airport" phx-change="suggest-airport">
+        <input type="text" name="airport" value="" autofocus list="airports" phx-debounce="1000"
+               placeholder="Search by airport" autocomplete="off" readonly={@loading} />
+        <button type="submit">
+          <img src="images/search.svg" />
+        </button>
+      </form>
+
+      <datalist id="airports">
+        <%= for airport <- @airports do %>
+          <option value={airport}>
+            <%= airport %>
+          </option>
+        <% end %>
+      </datalist>
 
       <div class="flights">
         <ul>
@@ -75,10 +94,44 @@ defmodule LiveviewStudioWeb.FlightsLive do
     {:noreply, socket}
   end
 
+  def handle_info({:do_search_airport, airport}, socket) do
+    socket = case Flights.search_by_airport(airport) do
+      [] ->
+        socket
+        |> put_flash(:info, "No flights found for airport #{airport}")
+        |> assign(loading: false, flights: [])
+
+      flights ->
+        socket
+        |> clear_flash()
+        |> assign(loading: false, flights: flights)
+    end
+
+    {:noreply, socket}
+  end
+
   def handle_event("search-flight", %{ "number" => number }, socket) do
     send(self(), {:do_search_flight, number})
     socket = assign(socket,
       loading: true
+    )
+    {:noreply, socket}
+  end
+
+  def handle_event("search-airport", %{ "airport" => airport }, socket) do
+    send(self(), {:do_search_airport, airport})
+
+    socket = assign(socket,
+      airport: airport,
+      flights: [],
+      loading: true
+    )
+    {:noreply, socket}
+  end
+
+  def handle_event("suggest-airport", %{ "airport" => prefix }, socket) do
+    socket = assign(socket,
+      airports: Airports.suggest(prefix)
     )
     {:noreply, socket}
   end

@@ -42,7 +42,7 @@ defmodule LiveviewStudioWeb.LicenseLive do
           </div>
 
           <form phx-change="update">
-            <input type="range" min="1" max="10" name="seats" value={@seats} />
+            <input type="range" min="1" max="10" name="seats" value={@seats} phx-change="250" />
             <select id="refresh-interval" name="refresh-interval">
               <%= options_for_select(refresh_options(), @refresh_interval) %>
             </select>
