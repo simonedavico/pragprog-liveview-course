@@ -3,7 +3,12 @@ defmodule LiveviewStudioWeb.PageLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, query: "", results: %{})}
+    {:ok, assign(
+      socket,
+      query: "",
+      results: %{},
+      routes: get_liveviews()
+    )}
   end
 
   @impl true
@@ -35,5 +40,10 @@ defmodule LiveviewStudioWeb.PageLive do
         String.starts_with?(app, query) and not List.starts_with?(desc, ~c"ERTS"),
         into: %{},
         do: {app, vsn}
+  end
+
+  defp get_liveviews() do
+    LiveviewStudioWeb.Router.__routes__()
+    |> Enum.filter(&(&1.plug == Phoenix.LiveView.Plug))
   end
 end

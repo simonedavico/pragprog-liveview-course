@@ -17,10 +17,8 @@ defmodule LiveviewStudioWeb.ServersLive do
 
   # invoked after mount
   # state that changes based on navigation should be set here
-  def handle_params(%{"id" => id}, _url, socket) do
-    id = String.to_integer(id)
-
-    server = Servers.get_server!(id)
+  def handle_params(%{"name" => name}, _url, socket) do
+    server = Servers.get_server_by_name(name)
 
     socket = assign(
       socket,
@@ -45,7 +43,7 @@ defmodule LiveviewStudioWeb.ServersLive do
           <%= for server <- @servers do %>
             <div>
               <%= live_patch link_body(server),
-                to: Routes.live_path(@socket, __MODULE__, id: server.id),
+                to: Routes.live_path(@socket, __MODULE__, name: server.name),
                 class: if server == @selected_server, do: "active"
               %>
             </div>
