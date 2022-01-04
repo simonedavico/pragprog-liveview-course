@@ -103,4 +103,13 @@ defmodule LiveviewStudio.Servers do
   end
 
   def get_server_by_name(name), do: Repo.get_by(Server, name: name)
+
+  def toggle_server_status(%Server{} = server) do
+    update_server(server, %{
+      status: toggle_status(server.status)
+    })
+  end
+
+  defp toggle_status("down"), do: "up"
+  defp toggle_status("up"), do: "down"
 end

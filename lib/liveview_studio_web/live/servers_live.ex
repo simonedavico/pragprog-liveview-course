@@ -64,6 +64,23 @@ defmodule LiveviewStudioWeb.ServersLive do
     end
   end
 
+  def handle_event("toggle_status", %{ "id" => id }, socket) do
+    id = String.to_integer(id)
+    server = Servers.get_server!(id)
+
+    {:ok, server} = Servers.toggle_server_status(server)
+
+    # refetch for simplicity , but we could also update
+    # the matching server in the current list
+    servers = Servers.list_servers()
+      |> IO.inspect()
+
+    {:noreply, assign(socket,
+      servers: servers,
+      selected_server: server
+    )}
+  end
+
   def handle_event("validate", %{ "server" => params }, socket) do
     changeset = %Server{}
       |> Servers.change_server(params)
@@ -170,9 +187,14 @@ defmodule LiveviewStudioWeb.ServersLive do
     <div class="card">
     <div class="header">
       <h2><%= @selected_server.name %></h2>
-      <span class={@selected_server.status}>
+      <button
+        class={@selected_server.status}
+        phx-disable-with="Saving..."
+        phx-click="toggle_status"
+        phx-value-id={@selected_server.id}
+      >
         <%= @selected_server.status %>
-      </span>
+      </button>
     </div>
     <div class="body">
       <div class="row">
