@@ -64,6 +64,14 @@ defmodule LiveviewStudioWeb.ServersLive do
     end
   end
 
+  def handle_event("validate", %{ "server" => params }, socket) do
+    changeset = %Server{}
+      |> Servers.change_server(params)
+      |> Map.put(:action, :insert)
+
+    {:noreply, assign(socket, new_server: changeset)}
+  end
+
   def render(assigns) do
     ~H"""
     <h1>Servers</h1>
@@ -99,14 +107,15 @@ defmodule LiveviewStudioWeb.ServersLive do
 
   defp new_server(assigns) do
     ~H"""
-      <.form let={f} for={@new_server} phx-submit="save">
+      <.form let={f} for={@new_server} phx-submit="save" phx-change="validate">
         <div class="field">
           <label>
             Name
             <%= text_input f,
               :name,
               placeholder: "Name",
-              autocomplete: "off" %>
+              autocomplete: "off",
+            phx_debounce: "blur" %>
           </label>
           <%= error_tag f, :name %>
         </div>
@@ -117,7 +126,8 @@ defmodule LiveviewStudioWeb.ServersLive do
             <%= text_input f,
               :framework,
               placeholder: "Framework",
-              autocomplete: "off" %>
+              autocomplete: "off",
+              phx_debounce: "blur" %>
           </label>
           <%= error_tag f, :framework %>
         </div>
@@ -128,17 +138,21 @@ defmodule LiveviewStudioWeb.ServersLive do
             <%= text_input f,
               :size,
               placeholder: "Size",
-              autocomplete: "off" %>
-            </label>
+              autocomplete: "off",
+              phx_debounce: "blur" %>
+          </label>
           <%= error_tag f, :size %>
         </div>
 
         <div class="field">
-          <label>Git repo</label>
-          <%= text_input f,
-            :git_repo,
-            placeholder: "Git Repo",
-            autocomplete: "off" %>
+          <label>
+            Git repo
+            <%= text_input f,
+              :git_repo,
+              placeholder: "Git Repo",
+              autocomplete: "off",
+              phx_debounce: "blur" %>
+          </label>
           <%= error_tag f, :git_repo %>
         </div>
 
