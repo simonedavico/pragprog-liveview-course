@@ -28,6 +28,7 @@ defmodule LiveviewStudioWeb.Router do
     live "/repos", ReposLive
     live "/servers", ServersLive
     live "/paginate", PaginateLive
+    live "/volunteers", VolunteersLive
   end
 
   # Other scopes may use custom stacks.
