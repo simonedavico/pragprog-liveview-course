@@ -6,6 +6,8 @@
 
 @import "tailwindcss/utilities";
 
+@import "../node_modules/flatpickr/dist/flatpickr.css";
+
 @import "./live_view.css";
 
 @import "./custom.css";

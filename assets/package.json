@@ -5,7 +5,10 @@
     "scripts": {
         "deploy": "NODE_ENV=production tailwindcss --postcss --minify --input=css/app.css --output=../priv/static/assets/app.css"
     },
-    "dependencies": {},
+    "dependencies": {
+        "flatpickr": "^4.6.9",
+        "libphonenumber-js": "^1.9.44"
+    },
     "devDependencies": {
         "autoprefixer": "^10.3.7",
         "postcss": "^8.3.9",

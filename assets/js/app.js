@@ -24,6 +24,8 @@ import "phoenix_html";
 // Establish Phoenix Socket and LiveView configuration.
 import { Socket } from "phoenix";
 import { LiveSocket } from "phoenix_live_view";
+import flatpickr from "flatpickr";
+import { AsYouType } from "libphonenumber-js";
 import topbar from "../vendor/topbar";
 
 const Hooks = {
@@ -42,6 +44,29 @@ const Hooks = {
     },
     destroyed() {
       this.observer.disconnect();
+    },
+  },
+  Flatpickr: {
+    handleDatePicked([date], dateStr, _instance) {
+      console.log("Date picked", {
+        date,
+        dateStr,
+      });
+      this.pushEvent("date-selected", { date: dateStr });
+    },
+    mounted() {
+      this.datepicker = flatpickr(this.el, {
+        enableTime: false,
+        dateFormat: "F d, Y",
+        onChange: this.handleDatePicked.bind(this),
+      });
+    },
+  },
+  PhoneNumber: {
+    mounted() {
+      this.el.addEventListener("input", (e) => {
+        e.target.value = new AsYouType("US").input(e.target.value);
+      });
     },
   },
 };
