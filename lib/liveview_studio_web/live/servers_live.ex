@@ -73,7 +73,6 @@ defmodule LiveviewStudioWeb.ServersLive do
     # refetch for simplicity , but we could also update
     # the matching server in the current list
     servers = Servers.list_servers()
-      |> IO.inspect()
 
     {:noreply, assign(socket,
       servers: servers,

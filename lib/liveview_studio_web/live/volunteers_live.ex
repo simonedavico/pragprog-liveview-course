@@ -5,6 +5,8 @@ defmodule LiveviewStudioWeb.VolunteersLive do
   alias LiveviewStudio.Volunteers.Volunteer
 
   def mount(_params, _session, socket) do
+    if connected?(socket), do: Volunteers.subscribe()
+
     volunteers = Volunteers.list_volunteers()
 
     changeset = Volunteers.change_volunteer(%Volunteer{})
@@ -20,16 +22,9 @@ defmodule LiveviewStudioWeb.VolunteersLive do
 
   def handle_event("save", %{ "volunteer" => params }, socket) do
     case Volunteers.create_volunteer(params) do
-      {:ok, volunteer} ->
+      {:ok, _volunteer} ->
         changeset = Volunteers.change_volunteer(%Volunteer{})
-
-        socket = update(
-          socket,
-          :volunteers,
-          fn volunteers -> [volunteer | volunteers] end
-        ) |> assign(changeset: changeset)
-
-        {:noreply, socket}
+        {:noreply, assign(socket, changeset: changeset)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         socket = assign(socket, changeset: changeset)
@@ -54,13 +49,24 @@ defmodule LiveviewStudioWeb.VolunteersLive do
       checked_out: !volunteer.checked_out
     })
 
-    # need to refetch the list since they were temporary assigns
-    volunteers = Volunteers.list_volunteers()
-    socket = assign(socket, volunteers: volunteers)
+    {:noreply, socket}
+  end
 
-    # artificial delay
-    :timer.sleep(500)
+  def handle_info({:volunteer_updated, volunteer}, socket) do
+    socket = update(
+      socket,
+      :volunteers,
+      fn volunteers -> [volunteer | volunteers] end
+    )
+    {:noreply, socket}
+  end
 
+  def handle_info({:volunteer_created, volunteer}, socket) do
+    socket = update(
+      socket,
+      :volunteers,
+      fn volunteers -> [volunteer | volunteers] end
+    )
     {:noreply, socket}
   end
 
