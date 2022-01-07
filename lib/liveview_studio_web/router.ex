@@ -30,6 +30,7 @@ defmodule LiveviewStudioWeb.Router do
     live "/servers/new", ServersLive, :new
     live "/paginate", PaginateLive
     live "/volunteers", VolunteersLive
+    live "/infinite-scroll", InfiniteScrollLive
   end
 
   # Other scopes may use custom stacks.

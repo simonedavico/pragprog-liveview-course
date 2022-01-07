@@ -42,6 +42,7 @@ defmodule LiveviewStudio.MixProject do
       {:gettext, "~> 0.11"},
       {:phoenix_live_dashboard, "~> 0.6"},
       {:esbuild, "~> 0.2", runtime: Mix.env() == :dev},
+      {:faker, "~> 0.17.0"},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
       {:jason, "~> 1.2"},
