@@ -5,6 +5,8 @@ defmodule LiveviewStudioWeb.ServersLive do
   alias LiveviewStudio.Servers.Server
 
   def mount(_params, _session, socket) do
+    if connected?(socket), do: Servers.subscribe()
+
     servers = Servers.list_servers()
 
     socket =
@@ -46,12 +48,7 @@ defmodule LiveviewStudioWeb.ServersLive do
     case Servers.create_server(params) do
       {:ok, server} ->
         changeset = Servers.change_server(%Server{})
-
-        socket = update(
-          socket,
-          :servers,
-          fn servers -> [server | servers] end
-        )
+        socket = socket
         |> assign(changeset: changeset)
         |> put_flash(:info, "Server created!")
         |> push_patch(to: Routes.live_path(socket, __MODULE__, name: server.name))
@@ -67,17 +64,8 @@ defmodule LiveviewStudioWeb.ServersLive do
   def handle_event("toggle_status", %{ "id" => id }, socket) do
     id = String.to_integer(id)
     server = Servers.get_server!(id)
-
-    {:ok, server} = Servers.toggle_server_status(server)
-
-    # refetch for simplicity , but we could also update
-    # the matching server in the current list
-    servers = Servers.list_servers()
-
-    {:noreply, assign(socket,
-      servers: servers,
-      selected_server: server
-    )}
+    {:ok, _server} = Servers.toggle_server_status(server)
+    {:noreply, socket}
   end
 
   def handle_event("validate", %{ "server" => params }, socket) do
@@ -86,6 +74,27 @@ defmodule LiveviewStudioWeb.ServersLive do
       |> Map.put(:action, :insert)
 
     {:noreply, assign(socket, new_server: changeset)}
+  end
+
+  def handle_info({:server_created, server}, socket) do
+    socket = update(
+      socket,
+      :servers,
+      fn servers -> [server | servers] end
+    )
+    {:noreply, socket}
+  end
+
+  def handle_info({:server_status_toggled, server}, socket) do
+    current_selected_server = socket.assigns.selected_server
+    socket = if (server.id === current_selected_server.id) do
+      assign(socket, selected_server: server)
+    else
+      socket
+    end
+    |> assign(servers: Servers.list_servers())
+
+    {:noreply, socket}
   end
 
   def render(assigns) do
@@ -153,6 +162,7 @@ defmodule LiveviewStudioWeb.ServersLive do
             Size
             <%= text_input f,
               :size,
+              type: "number",
               placeholder: "Size",
               autocomplete: "off",
               phx_debounce: "blur" %>
